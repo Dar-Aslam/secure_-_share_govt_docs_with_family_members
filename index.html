@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Secure Document Sharing</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Secure & Share Govt Documents</h1>
+
+    <!-- Login Section -->
+    <div id="login-section">
+      <input type="email" id="email" placeholder="Enter Email" required />
+      <input type="password" id="password" placeholder="Enter Password" required />
+      <button onclick="login()">Login</button>
+      <p>New user? <a href="#" onclick="register()">Register</a></p>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" style="display: none;">
+      <h2>Welcome, <span id="user-email"></span></h2>
+
+      <div class="doc-form">
+        <input type="text" id="docName" placeholder="Document Name (e.g., PAN Card)" />
+        <input type="text" id="aadhar" placeholder="Aadhar Number" />
+        <button onclick="saveDocMeta()">Save Document Info</button>
+      </div>
+
+      <h3>Your Documents</h3>
+      <ul id="doc-list"></ul>
+
+      <button onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs (via script tag) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+  <!-- Your App JS -->
+  <script src="script.js"></script>
+</body>
+</html>
