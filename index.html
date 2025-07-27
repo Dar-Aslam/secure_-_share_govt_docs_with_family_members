@@ -1,46 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Secure Document Sharing</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <title>Secure & Share Govt Document</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
-    <h1>Secure & Share Govt Documents</h1>
-
-    <!-- Login Section -->
-    <div id="login-section">
-      <input type="email" id="email" placeholder="Enter Email" required />
-      <input type="password" id="password" placeholder="Enter Password" required />
-      <button onclick="login()">Login</button>
-      <p>New user? <a href="#" onclick="register()">Register</a></p>
-    </div>
-
-    <!-- Dashboard -->
-    <div id="dashboard" style="display: none;">
-      <h2>Welcome, <span id="user-email"></span></h2>
-
-      <div class="doc-form">
-        <input type="text" id="docName" placeholder="Document Name (e.g., PAN Card)" />
-        <input type="text" id="aadhar" placeholder="Aadhar Number" />
-        <button onclick="saveDocMeta()">Save Document Info</button>
+    <h1>Secure & Share Govt Document</h1>
+    <div id="auth-section">
+      <div id="register-div">
+        <h2>Register (Email)</h2>
+        <input type="email" id="register-email" placeholder="Enter email">
+        <input type="password" id="register-pass" placeholder="Enter password">
+        <button onclick="registerUser()">Register</button>
       </div>
-
-      <h3>Your Documents</h3>
+      <div id="login-div">
+        <h2>Login (Email)</h2>
+        <input type="email" id="login-email" placeholder="Email">
+        <input type="password" id="login-pass" placeholder="Password">
+        <button onclick="loginUser()">Login</button>
+      </div>
+    </div>
+    <div id="dashboard" style="display:none;">
+      <h2>Dashboard</h2>
+      <div id="user-email"></div>
+      <button onclick="logoutUser()">Logout</button>
+      <h3>Document List (Firestore)</h3>
       <ul id="doc-list"></ul>
-
-      <button onclick="logout()">Logout</button>
+      <button onclick="addDummyDocument()">Add Dummy Document</button>
+      <div id="log-section">
+        <h4>Action Logs</h4>
+        <ul id="log-list"></ul>
+      </div>
     </div>
   </div>
-
-  <!-- Firebase SDKs (via script tag) -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-
-  <!-- Your App JS -->
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

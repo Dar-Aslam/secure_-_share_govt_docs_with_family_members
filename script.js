@@ -1,11 +1,11 @@
-// Firebase Config
+// Your Firebase config
 const firebaseConfig = {
-  apiKey: "AIzaSyBgiRYIR1otsBmBgmW_NB7BuOb0mEg01kM",
-  authDomain: "govtdocshare.firebaseapp.com",
-  projectId: "govtdocshare",
-  storageBucket: "govtdocshare.firebasestorage.app",
-  messagingSenderId: "71040488992",
-  appId: "1:71040488992:web:72963992605e7c2015ce45"
+  apiKey: "AIzaSyAIiWgBWM8cA1pO8IEsIHybcKEc7Iu2vJ0",
+  authDomain: "govtdatashare.firebaseapp.com",
+  projectId: "govtdatashare",
+  storageBucket: "govtdatashare.appspot.com",
+  messagingSenderId: "297935547319",
+  appId: "1:297935547319:web:a617bf10e2e1f188aad632"
 };
 
 // Initialize Firebase
@@ -13,88 +13,124 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// LOGIN
-function login() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+// Simple logger
+function logAction(action) {
+  const logList = document.getElementById("log-list");
+  const item = document.createElement("li");
+  item.textContent = `[${new Date().toLocaleTimeString()}] ${action}`;
+  logList.prepend(item); // latest on top
+}
 
-  auth.signInWithEmailAndPassword(email, password)
-    .then(userCredential => {
-      showDashboard(email);
+// Registration with Email/Password
+function registerUser() {
+  const email = document.getElementById("register-email").value;
+  const pass = document.getElementById("register-pass").value;
+  auth.createUserWithEmailAndPassword(email, pass)
+    .then(function(userCredential) {
+      logAction("User registered with email");
+      document.getElementById("auth-section").style.display = "none";
+      document.getElementById("dashboard").style.display = "block";
+      showUserDetails();
+      loadDocuments();
     })
-    .catch(error => {
-      alert("Login failed: " + error.message);
+    .catch(function(error) {
+      alert(error.message);
+      logAction("Registration failed: " + error.message);
     });
 }
 
-// REGISTER
-function register() {
-  const email = prompt("Enter email:");
-  const password = prompt("Enter password:");
-
-  auth.createUserWithEmailAndPassword(email, password)
-    .then(userCredential => {
-      alert("Registered successfully!");
+// Email login
+function loginUser() {
+  const email = document.getElementById("login-email").value;
+  const pass = document.getElementById("login-pass").value;
+  auth.signInWithEmailAndPassword(email, pass)
+    .then(function(userCredential) {
+      logAction("User logged in via email");
+      document.getElementById("auth-section").style.display = "none";
+      document.getElementById("dashboard").style.display = "block";
+      showUserDetails();
+      loadDocuments();
     })
-    .catch(error => {
-      alert("Registration error: " + error.message);
+    .catch(function(error) {
+      alert(error.message);
+      logAction("Login failed: " + error.message);
     });
 }
 
-// DASHBOARD
-function showDashboard(email) {
-  document.getElementById("login-section").style.display = "none";
-  document.getElementById("dashboard").style.display = "block";
-  document.getElementById("user-email").textContent = email;
-  loadDocuments();
-}
-
-// SAVE Document Metadata Only
-function saveDocMeta() {
-  const docName = document.getElementById("docName").value;
-  const aadhar = document.getElementById("aadhar").value;
-
-  if (!docName || !aadhar) {
-    alert("Please fill all fields.");
-    return;
-  }
-
-  const user = auth.currentUser;
-
-  db.collection("documents").add({
-    name: docName,
-    aadhar: aadhar,
-    user: user.email,
-    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-  }).then(() => {
-    alert("Document metadata saved!");
-    loadDocuments();
-  }).catch(err => {
-    alert("Error saving document: " + err.message);
+function logoutUser() {
+  auth.signOut().then(function() {
+    document.getElementById("auth-section").style.display = "block";
+    document.getElementById("dashboard").style.display = "none";
+    logAction("User logged out");
+    document.getElementById("user-email").textContent = '';
+    document.getElementById("doc-list").innerHTML = '';
   });
 }
 
-// LOAD Metadata
+// Show logged-in user's email
+function showUserDetails() {
+  const user = auth.currentUser;
+  if (user) {
+    document.getElementById("user-email").textContent = `Logged in as: ${user.email}`;
+  }
+}
+
+// List documents from Firestore
 function loadDocuments() {
   const user = auth.currentUser;
+  if (!user) return;
   const docList = document.getElementById("doc-list");
-  docList.innerHTML = "";
-
-  db.collection("documents").where("user", "==", user.email).get()
+  docList.innerHTML = '';
+  db.collection('users').doc(user.uid).collection('documents').orderBy('addedAt', 'desc')
+    .get()
     .then(snapshot => {
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        const li = document.createElement("li");
-        li.textContent = `${data.name} (Aadhar: ${data.aadhar})`;
-        docList.appendChild(li);
-      });
+      if (snapshot.empty) {
+        docList.innerHTML = '<li>No documents found.</li>';
+      } else {
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const li = document.createElement('li');
+          li.textContent = `${data.name} (${data.type || 'unknown'})`;
+          docList.appendChild(li);
+        });
+      }
+      logAction("Document list loaded");
+    })
+    .catch(error => {
+      logAction("Failed to load documents: " + error.message);
+      docList.innerHTML = '<li>Error loading documents</li>';
     });
 }
 
-// LOGOUT
-function logout() {
-  auth.signOut().then(() => {
-    document.getElementById("login-section").style.display = "block";
-    document.getElementById("dashboard").style.display = "none";
+// Add dummy document (simulate upload)
+function addDummyDocument() {
+  const user = auth.currentUser;
+  if (!user) return;
+  const docName = "Dummy Document " + Math.floor(Math.random() * 1000);
+  db.collection('users').doc(user.uid).collection('documents').add({
+    name: docName,
+    type: 'dummy',
+    addedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(() => {
+    logAction(`Added document: ${docName}`);
+    loadDocuments();
+  }).catch(error => {
+    logAction("Failed to add document: " + error.message);
   });
 }
+
+// Listen to auth state changes
+auth.onAuthStateChanged(function(user) {
+  if (user) {
+    document.getElementById("auth-section").style.display = "none";
+    document.getElementById("dashboard").style.display = "block";
+    showUserDetails();
+    loadDocuments();
+    logAction("User session active");
+  } else {
+    document.getElementById("auth-section").style.display = "block";
+    document.getElementById("dashboard").style.display = "none";
+    document.getElementById("user-email").textContent = '';
+    document.getElementById("doc-list").innerHTML = '';
+  }
+});

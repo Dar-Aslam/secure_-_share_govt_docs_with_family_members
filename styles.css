@@ -1,47 +1,58 @@
 body {
   font-family: Arial, sans-serif;
-  background: #f4f4f4;
+  background: #f7f7fc;
   margin: 0;
   padding: 0;
 }
-
 .container {
-  max-width: 600px;
+  max-width: 450px;
   margin: 50px auto;
-  background: white;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.09);
   padding: 2em;
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.2);
 }
-
-h1, h2 {
+h1 {
+  color: #333;
   text-align: center;
 }
-
-input[type="email"],
-input[type="password"],
-input[type="file"] {
-  display: block;
-  width: 100%;
-  padding: 12px;
-  margin: 10px 0;
+h2, h3, h4 {
+  color: #444;
 }
-
-button {
+input, button {
   width: 100%;
-  padding: 12px;
-  background: #007bff;
-  color: white;
+  margin: 0.4em 0;
+  padding: 0.7em;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1em;
+}
+button {
+  background: #0a6efd;
+  color: #fff;
   border: none;
   cursor: pointer;
-  margin: 10px 0;
+  transition: background 0.2s;
 }
-
 button:hover {
-  background: #0056b3;
+  background: #084d9c;
 }
-
-ul {
-  list-style-type: none;
-  padding: 0;
+#dashboard {
+  margin-top: 1.5em;
+}
+#log-section {
+  margin-top: 1em;
+  background: #f0f7ff;
+  border-radius: 8px;
+  padding: 1em;
+}
+#log-list {
+  list-style: none;
+  padding-left: 0;
+  font-size: 0.95em;
+}
+#user-email {
+  font-size: 0.95em;
+  color: #0a6efd;
+  margin-bottom: 1em;
 }
